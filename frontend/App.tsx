@@ -48,6 +48,7 @@ function App() {
           hints: {},
           systemColors: {
             backgroundColor: isDarkMode ? `rgb(28,28,30)` : backgroundColor,
+            disabledColor: isDarkMode ? `rgb(72,72,74)` : 'rgb(199,199,204)',
             primary: isDarkMode ? `rgb(10,132,255)` : primary
           },
       });

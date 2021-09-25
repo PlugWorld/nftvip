@@ -10,6 +10,7 @@ export type ThemeHints = {
 export type Colors = {
   readonly primary: string;
   readonly backgroundColor: string;
+  readonly disabledColor: string;
 };
 
 export type Fonts = {

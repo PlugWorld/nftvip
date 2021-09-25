@@ -24,6 +24,7 @@ export const defaultValue: ThemeContextValue = {
   // https://developer.apple.com/design/human-interface-guidelines/ios/visual-design/color/
   systemColors: {
     backgroundColor: 'rgb(242,242,247)',
+    disabledColor: 'rgb(199,199,204)',
     primary: 'rgb(0,122,255)',
   },
 };
