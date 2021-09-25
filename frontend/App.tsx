@@ -1,92 +1,83 @@
-import { HARDHAT_PORT, HARDHAT_PRIVATE_KEY } from '@env';
+import {
+  ApolloClient,
+  ApolloProvider,
+  InMemoryCache,
+} from '@apollo/client';
+import {EIP721_SUBGRAPH_API_KEY} from '@env';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useWalletConnect, withWalletConnect } from '@walletconnect/react-native-dapp';
+import {NavigationContainer} from '@react-navigation/native';
+import {createStackNavigator} from '@react-navigation/stack';
+import {withWalletConnect} from '@walletconnect/react-native-dapp';
+import deepmerge from 'deepmerge';
 import React from 'react';
-import { Platform, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import localhost from 'react-native-localhost';
-import Web3 from 'web3';
+import {Platform, StyleSheet, View } from 'react-native';
+import { useDarkMode } from 'react-native-dynamic';
 
 import { expo } from '../app.json';
-import Hello from '../artifacts/contracts/Hello.sol/Hello.json';
 
-const styles = StyleSheet.create({
-  center: { alignItems: 'center', justifyContent: 'center' },
-  // eslint-disable-next-line react-native/no-color-literals
-  white: { backgroundColor: 'white' },
+import {SelectCollection} from './collection';
+import {Scanner, ScannerTitle} from './scan'
+import {defaultThemeValue, ThemeContext, ThemeContextValue} from './theme';
+
+const client = new ApolloClient({
+  cache: new InMemoryCache(),
+  uri: `https://gateway.thegraph.com/api/${EIP721_SUBGRAPH_API_KEY}/subgraphs/id/0x7859821024e633c5dc8a4fcf86fc52e7720ce525-0`,
 });
 
-const shouldDeployContract = async (web3, abi, data, from: string) => {
-  const deployment = new web3.eth.Contract(abi).deploy({ data });
-  const gas = await deployment.estimateGas();
-  const {
-    options: { address: contractAddress },
-  } = await deployment.send({ from, gas });
-  return new web3.eth.Contract(abi, contractAddress);
+
+const headerHeight = 100;
+
+const Stack = createStackNavigator();
+const headerStyle = {
+  height: headerHeight,
 };
 
-function App(): JSX.Element {
-  const connector = useWalletConnect();
-  const [message, setMessage] = React.useState<string>('Loading...');
-  const web3 = React.useMemo(
-    () => new Web3(new Web3.providers.HttpProvider(`http://${localhost}:${HARDHAT_PORT}`)),
-    [HARDHAT_PORT]
-  );
-  React.useEffect(() => {
-    (async () => {
-      const { address } = await web3.eth.accounts.privateKeyToAccount(HARDHAT_PRIVATE_KEY);
-      const contract = await shouldDeployContract(
-        web3,
-        Hello.abi,
-        Hello.bytecode,
-        address
-      );
-      setMessage(await contract.methods.sayHello('React Native').call());
-    })();
-  }, [web3, shouldDeployContract, setMessage, HARDHAT_PRIVATE_KEY]);
-  const connectWallet = React.useCallback(() => {
-    return connector.connect();
-  }, [connector]);
-  const signTransaction = React.useCallback(async () => {
-    try {
-       await connector.signTransaction({
-        data: '0x',
-        from: '0xbc28Ea04101F03aA7a94C1379bc3AB32E65e62d3',
-        gas: '0x9c40',
-        gasPrice: '0x02540be400',
-        nonce: '0x0114',
-        to: '0x89D24A7b4cCB1b6fAA2625Fe562bDd9A23260359',
-        value: '0x00',
+function App() {
+  const isDarkMode = useDarkMode();
+  const value = React.useMemo<ThemeContextValue>(
+    () => {
+      const {systemColors} = defaultThemeValue;
+      const {primary} = systemColors;
+      return deepmerge(defaultThemeValue, {
+          hints: {},
+          systemColors: {
+            primary: isDarkMode ? `rgb(10,132,255)` : primary
+          },
       });
-    } catch (e) {
-      console.error(e);
-    }
-  }, [connector]);
-  const killSession = React.useCallback(() => {
-    return connector.killSession();
-  }, [connector]);
+    },
+    [isDarkMode]
+  );
   return (
-    <View style={[StyleSheet.absoluteFill, styles.center, styles.white]}>
-      <Text testID="tid-message">{message}</Text>
-      {!connector.connected && (
-        <TouchableOpacity onPress={connectWallet}>
-          <Text>Connect a Wallet</Text>
-        </TouchableOpacity>
-      )}
-      {!!connector.connected && (
-        <>
-          <TouchableOpacity onPress={signTransaction}>
-            <Text>Sign a Transaction</Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={killSession}>
-            <Text>Kill Session</Text>
-          </TouchableOpacity>
-        </>
-      )}
-    </View>
+    <ThemeContext.Provider value={value}>
+      <NavigationContainer>
+        <ApolloProvider client={client}>
+          <View style={StyleSheet.absoluteFill}>
+             <Stack.Navigator initialRouteName="/scan">
+               <Stack.Screen
+                 component={Scanner}
+                 name="/scan"
+                 options={{
+                   headerStyle,
+                   headerTitle: () => <ScannerTitle height={headerHeight} />,
+                 }}
+               />
+               <Stack.Screen
+                 component={SelectCollection}
+                 name="/collection/select-collection"
+                 options={{
+                   headerStyle,
+                   headerTitle: () => <ScannerTitle height={headerHeight} />,
+                 }}
+               />
+             </Stack.Navigator>
+          </View>
+        </ApolloProvider>
+      </NavigationContainer>
+    </ThemeContext.Provider>
   );
 }
 
-const { scheme } = expo;
+const {scheme} = expo;
 
 export default withWalletConnect(App, {
   redirectUrl: Platform.OS === 'web' ? window.location.origin : `${scheme}://`,
