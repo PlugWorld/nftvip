@@ -62,7 +62,7 @@ export default function Scanner(): JSX.Element {
   }, [maybeEthereumAddress]);
 
   const connector = useWalletConnect();
-  const {connected, accounts} = connector;
+  const {connected} = connector;
 
   const {
     data,
@@ -80,8 +80,6 @@ export default function Scanner(): JSX.Element {
 
   const {
     data: signerData,
-    loading: signerLoading,
-    error: signerError,
   } = useCollectionLookup({
     ethereumAddresses: signerEthereumAddresses,
   });

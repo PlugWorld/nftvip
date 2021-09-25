@@ -15,6 +15,8 @@ if (Platform.OS !== 'web') {
     [
       "Warning: The provided value 'ms-stream' is not a valid 'responseType'.",
       "Warning: The provided value 'moz-chunked-arraybuffer' is not a valid 'responseType'.",
+      /ReactNativeFiberHostComponent/,
+      "Easing was renamed to EasingNode in Reanimated 2. Please use EasingNode instead",
     ],
   );
 }
