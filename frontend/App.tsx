@@ -10,8 +10,13 @@ import {createStackNavigator} from '@react-navigation/stack';
 import {withWalletConnect} from '@walletconnect/react-native-dapp';
 import deepmerge from 'deepmerge';
 import React from 'react';
-import {Platform, StyleSheet, View } from 'react-native';
-import { useDarkMode } from 'react-native-dynamic';
+import {
+    Platform,
+    StyleSheet,
+    useWindowDimensions,
+    View, ViewStyle,
+} from 'react-native';
+import {useDarkMode} from 'react-native-dynamic';
 
 import { expo } from '../app.json';
 
@@ -37,16 +42,25 @@ function App() {
   const value = React.useMemo<ThemeContextValue>(
     () => {
       const {systemColors} = defaultThemeValue;
-      const {primary} = systemColors;
+      const {primary, backgroundColor} = systemColors;
       return deepmerge(defaultThemeValue, {
           hints: {},
           systemColors: {
+            backgroundColor: isDarkMode ? `rgb(28,28,30)` : backgroundColor,
             primary: isDarkMode ? `rgb(10,132,255)` : primary
           },
       });
     },
     [isDarkMode]
   );
+  const {hints} = value;
+  const {statusBarHeight} = hints;
+  const {width} = useWindowDimensions();
+  const hideStatusBar: ViewStyle = {
+    left: width * -0.5,
+    position: 'absolute',
+    top: -statusBarHeight,
+  };
   return (
     <ThemeContext.Provider value={value}>
       <NavigationContainer>
@@ -58,7 +72,12 @@ function App() {
                  name="/scan"
                  options={{
                    headerStyle,
-                   headerTitle: () => <ScannerTitle height={headerHeight} />,
+                   headerTitle: () => (
+                     <ScannerTitle
+                       height={headerHeight}
+                       style={hideStatusBar}
+                     />
+                   ),
                  }}
                />
                <Stack.Screen
@@ -66,10 +85,17 @@ function App() {
                  name="/collection/select-collection"
                  options={{
                    headerStyle,
-                   headerTitle: () => <ScannerTitle height={headerHeight} />,
+                   headerTitle: () => <React.Fragment />,
                  }}
                />
              </Stack.Navigator>
+             {/*
+               HACK: Cached root view so we don't visibly mount an expensive image.
+                     Not interactive because of missing navigator context.
+             */}
+             <View pointerEvents="none" style={StyleSheet.absoluteFill}>
+               <ScannerTitle height={headerHeight} />
+             </View>
           </View>
         </ApolloProvider>
       </NavigationContainer>

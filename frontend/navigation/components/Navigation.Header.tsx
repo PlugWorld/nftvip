@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {StyleSheet, useWindowDimensions, View} from 'react-native';
+import {StyleProp, StyleSheet, useWindowDimensions, View, ViewStyle} from 'react-native';
 
 import {useTheme} from '../../theme';
 
@@ -9,24 +9,16 @@ const styles = StyleSheet.create({
   },
 });
 
-export default function NavigationHeader({children, height}: {
+export default function NavigationHeader({children, height, style}: {
   readonly children?: JSX.Element | readonly JSX.Element[];
   readonly height: number;
+  readonly style?: StyleProp<ViewStyle>;
 }): JSX.Element {
   const {width} = useWindowDimensions();
   const {hints} = useTheme();
   const {statusBarHeight} = hints;
   return (
-    <View
-      style={[
-        styles.absolute,
-        {
-          height,
-          left: -width * 0.5,
-          top: -1 * statusBarHeight,
-          width,
-        },
-      ]}>
+    <View style={[style, styles.absolute, {height, width}]}>
       <View
         children={children}
         style={[

@@ -2,7 +2,7 @@ import {Ionicons} from '@expo/vector-icons';
 import {useNavigation} from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import * as React from 'react';
-import {StyleSheet, TouchableOpacity, View} from 'react-native';
+import {StyleProp, StyleSheet, TouchableOpacity, View, ViewStyle} from 'react-native';
 import FastImage from 'react-native-fast-image';
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -27,8 +27,9 @@ const styles = StyleSheet.create({
   },
 });
 
-export default function ScannerTitle({height}: {
+export default function ScannerTitle({height, style}: {
   readonly height: number;
+  readonly style?: StyleProp<ViewStyle>;
 }): JSX.Element {
   const {systemColors, hints} = useTheme();
   const {marginStandard} = hints;
@@ -40,7 +41,7 @@ export default function ScannerTitle({height}: {
     navigation.push('/collection/select-collection');
   }, [navigation]);
   return (
-    <NavigationHeader height={height}>
+    <NavigationHeader height={height} style={style}>
       <View style={[styles.row, {padding: marginStandard}]}>
         <View style={styles.flex} />
         <FastImage
