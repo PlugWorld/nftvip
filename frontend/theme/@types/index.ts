@@ -1,6 +1,7 @@
 import {StyleProp, TextStyle} from "react-native";
 
 export type ThemeHints = {
+  readonly bottomBarHeight: number;
   readonly marginExtraShort: number;
   readonly marginShort: number;
   readonly marginStandard: number;

@@ -1,5 +1,4 @@
-import {Ionicons} from '@expo/vector-icons';
-import {useNavigation, useRoute} from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import * as React from 'react';
 import {StyleProp, StyleSheet, TouchableOpacity, View, ViewStyle} from 'react-native';
@@ -8,7 +7,7 @@ import FastImage from 'react-native-fast-image';
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import Logo from '../../../assets/image/logo.png';
-import {NavigationHeader, RouteNames} from '../../navigation';
+import {NavigationHeader} from '../../navigation';
 import {useTheme} from "../../theme";
 
 const styles = StyleSheet.create({
@@ -33,15 +32,12 @@ export default function ScannerTitle({height, style}: {
 }): JSX.Element {
   const {systemColors, hints} = useTheme();
   const {marginStandard} = hints;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const {primary} = systemColors;
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const navigation = useNavigation<StackNavigationProp<any>>();
-  const {name: routeName} = useRoute();
-  const onPressAdd = React.useCallback(
-    () => navigation.push(RouteNames.SELECT_COLLECTION),
-    [navigation]
-  );
   return (
     <NavigationHeader height={height} style={style}>
       <View style={[styles.row, {padding: marginStandard}]}>
@@ -51,9 +47,8 @@ export default function ScannerTitle({height, style}: {
           style={[styles.logo, {transform: [{scale: 0.8}]}]}
         />
         <View style={[styles.flex, styles.row, styles.flexEnd]}>
-          <TouchableOpacity>
-            <Ionicons onPress={onPressAdd} name="ios-add" size={30} color={primary} />
-          </TouchableOpacity>
+          {/* TODO: Something could go here. */}
+          <TouchableOpacity />
         </View>
       </View>
     </NavigationHeader>

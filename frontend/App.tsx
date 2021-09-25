@@ -20,7 +20,6 @@ import {useDarkMode} from 'react-native-dynamic';
 
 import { expo } from '../app.json';
 
-import {SelectCollection, SelectCollectionCreate} from './collection';
 import {RouteNames} from "./navigation";
 import {Scanner, ScannerTitle} from './scan'
 import {defaultThemeValue, ThemeContext, ThemeContextValue} from './theme';
@@ -80,22 +79,6 @@ function App() {
                        style={hideStatusBar}
                      />
                    ),
-                 }}
-               />
-               <Stack.Screen
-                 component={SelectCollection}
-                 name={RouteNames.SELECT_COLLECTION}
-                 options={{
-                   headerStyle,
-                   headerTitle: () => <React.Fragment />,
-                 }}
-               />
-               <Stack.Screen
-                 component={SelectCollectionCreate}
-                 name={RouteNames.CREATE_COLLECTION}
-                 options={{
-                   headerStyle,
-                   headerTitle: () => <React.Fragment />,
                  }}
                />
              </Stack.Navigator>

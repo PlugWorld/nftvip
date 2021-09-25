@@ -16,6 +16,7 @@ export const defaultValue: ThemeContextValue = {
     },
   },
   hints: {
+    bottomBarHeight: 30,
     marginExtraShort: 5,
     marginShort: 10,
     marginStandard: 15,

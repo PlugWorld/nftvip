@@ -1,1 +1,1 @@
-export {default as useTokenLookup} from './useTokenLookup';
+export {default as useCollectionLookup} from './useCollectionLookup';
