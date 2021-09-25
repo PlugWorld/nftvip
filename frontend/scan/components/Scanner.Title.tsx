@@ -1,5 +1,5 @@
 import {Ionicons} from '@expo/vector-icons';
-import {useNavigation} from '@react-navigation/native';
+import {useNavigation, useRoute} from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import * as React from 'react';
 import {StyleProp, StyleSheet, TouchableOpacity, View, ViewStyle} from 'react-native';
@@ -8,7 +8,7 @@ import FastImage from 'react-native-fast-image';
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import Logo from '../../../assets/image/logo.png';
-import {NavigationHeader} from '../../navigation';
+import {NavigationHeader, RouteNames} from '../../navigation';
 import {useTheme} from "../../theme";
 
 const styles = StyleSheet.create({
@@ -37,9 +37,11 @@ export default function ScannerTitle({height, style}: {
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
   const navigation = useNavigation<StackNavigationProp<any>>();
-  const onPressAdd = React.useCallback(() => {
-    navigation.push('/collection/select-collection');
-  }, [navigation]);
+  const {name: routeName} = useRoute();
+  const onPressAdd = React.useCallback(
+    () => navigation.push(RouteNames.SELECT_COLLECTION),
+    [navigation]
+  );
   return (
     <NavigationHeader height={height} style={style}>
       <View style={[styles.row, {padding: marginStandard}]}>

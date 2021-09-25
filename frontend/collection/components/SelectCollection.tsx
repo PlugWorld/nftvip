@@ -1,6 +1,9 @@
+import {useNavigation} from "@react-navigation/native";
+import {StackNavigationProp} from "@react-navigation/stack";
 import {useWalletConnect} from "@walletconnect/react-native-dapp";
 import * as React from 'react';
 import {
+  Button,
   Linking,
   ScrollView,
   StyleSheet,
@@ -9,6 +12,7 @@ import {
   View,
 } from 'react-native';
 
+import {RouteNames} from "../../navigation";
 import {useTheme} from '../../theme';
 import {useAccountsWalletCollections} from '../hooks';
 
@@ -39,11 +43,17 @@ export default function SelectCollection(): JSX.Element {
   const onPressDisconnectWallet = React.useCallback(() => {
     connector.killSession();
   }, [connector]);
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
+  const navigation = useNavigation<StackNavigationProp<any>>();
+  const onPressCreateCollection = React.useCallback(() => {
+    navigation.push(RouteNames.CREATE_COLLECTION);
+  }, [navigation]);
     return (
     <>
       <ScrollView style={[StyleSheet.absoluteFill, {padding: marginStandard}]}>
         <Text
-          children="Collections"
+          children="Collections 🦄"
           style={h1}
         />
         {maybeWalletCollection ? (
@@ -53,9 +63,11 @@ export default function SelectCollection(): JSX.Element {
               {/* TODO: intl */}
               <View style={{height: marginShort}} />
               <Text
-                children="Collections select the types of NFTs you're searching for. You can create these by tapping the + button."
+                children="Collections select the types of NFTs you're searching for. You can create a new collection by tapping the button below."
                 style={p1}
               />
+              <View style={{height: marginShort}} />
+              <Button onPress={onPressCreateCollection} title="Create Collection" />
             </>
         )}
         {connected ? (

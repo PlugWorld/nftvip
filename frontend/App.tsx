@@ -20,7 +20,8 @@ import {useDarkMode} from 'react-native-dynamic';
 
 import { expo } from '../app.json';
 
-import {SelectCollection} from './collection';
+import {SelectCollection, SelectCollectionCreate} from './collection';
+import {RouteNames} from "./navigation";
 import {Scanner, ScannerTitle} from './scan'
 import {defaultThemeValue, ThemeContext, ThemeContextValue} from './theme';
 
@@ -66,10 +67,10 @@ function App() {
       <NavigationContainer>
         <ApolloProvider client={client}>
           <View style={StyleSheet.absoluteFill}>
-             <Stack.Navigator initialRouteName="/scan">
+             <Stack.Navigator initialRouteName={RouteNames.SCAN}>
                <Stack.Screen
                  component={Scanner}
-                 name="/scan"
+                 name={RouteNames.SCAN}
                  options={{
                    headerStyle,
                    headerTitle: () => (
@@ -82,20 +83,21 @@ function App() {
                />
                <Stack.Screen
                  component={SelectCollection}
-                 name="/collection/select-collection"
+                 name={RouteNames.SELECT_COLLECTION}
+                 options={{
+                   headerStyle,
+                   headerTitle: () => <React.Fragment />,
+                 }}
+               />
+               <Stack.Screen
+                 component={SelectCollectionCreate}
+                 name={RouteNames.CREATE_COLLECTION}
                  options={{
                    headerStyle,
                    headerTitle: () => <React.Fragment />,
                  }}
                />
              </Stack.Navigator>
-             {/*
-               HACK: Cached root view so we don't visibly mount an expensive image.
-                     Not interactive because of missing navigator context.
-             */}
-             <View pointerEvents="none" style={StyleSheet.absoluteFill}>
-               <ScannerTitle height={headerHeight} />
-             </View>
           </View>
         </ApolloProvider>
       </NavigationContainer>
