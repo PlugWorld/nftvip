@@ -1,8 +1,8 @@
-import axios from 'axios';
 import * as React from 'react';
 import {useDebouncedCallback} from 'use-debounce';
 
 import { OpenSeaData } from '../@types';
+import {getCollectionByAssetOwner} from "../constants";
 
 const invalidAddressError
   = new Error('Unable to lookup tokens because the supplied address is invalid.');
@@ -19,41 +19,36 @@ type State = {
 //       multiple chains i.e. Tezos
 export default function useCollectionLookup({
   duration = 500,
-  maybeEthereumAddress,
+  ethereumAddresses,
 }: {
   readonly duration?: number;
-  readonly maybeEthereumAddress?: string | null;
+  readonly ethereumAddresses: readonly string[];
 }): State {
   const [state, setState] = React.useState({
     data: null,
     error: invalidAddressError,
     loading: false,
   });
-
-  const shouldUpdateTokens = useDebouncedCallback(
-    React.useCallback(async (withAssetOwner: string) => {
+  const shouldUpdateCollections = useDebouncedCallback(
+    React.useCallback(async (withAssetOwners: readonly string[]) => {
       try {
-        if (
-          typeof withAssetOwner === 'string' && !!withAssetOwner.length
-        ) {
-            setState(e => ({
-              ...e,
-              error: null,
-              loading: true,
-            }));
-            const url = `https://api.opensea.io/api/v1/collections?asset_owner=${withAssetOwner}&offset=0`;
-            const {data} = await axios({
-              method: 'get',
-              url,
-            });
-            return setState({
-              data: data as OpenSeaData,
-              error: undefined,
-              loading: false,
-            });
-        }
-        // eslint-disable-next-line functional/no-throw-statement
-        throw new Error('Invalid asset owner.');
+        setState(e => ({
+          ...e,
+          error: null,
+          loading: true,
+        }));
+        const nextCollections = await Promise.all(
+          withAssetOwners.map(getCollectionByAssetOwner)
+        );
+        const nextData = nextCollections.reduce(
+          (e, i) => [...e, ...i],
+          []
+        );
+        setState({
+          data: nextData,
+          error: undefined,
+          loading: false,
+        });
       } catch (error) {
          setState(e => ({
            ...e,
@@ -66,10 +61,8 @@ export default function useCollectionLookup({
   );
 
   React.useEffect(() => {
-    if (typeof maybeEthereumAddress === 'string') {
-      void shouldUpdateTokens(maybeEthereumAddress);
-    }
-  }, [maybeEthereumAddress, shouldUpdateTokens]);
+    void shouldUpdateCollections(ethereumAddresses);
+  }, [ethereumAddresses]);
 
   return state;
 };

@@ -1,4 +1,5 @@
 import {BottomSheetScrollView} from '@gorhom/bottom-sheet';
+import {useWalletConnect} from "@walletconnect/react-native-dapp";
 import {BarCodeScanner} from 'expo-barcode-scanner';
 import FuzzySearch from 'fuzzy-search';
 import * as React from 'react';
@@ -6,7 +7,9 @@ import {
   ActivityIndicator, LayoutAnimation,
   NativeSyntheticEvent,
   StyleSheet,
-  Text, TextInputChangeEventData,
+  Switch,
+  Text,
+  TextInputChangeEventData,
   useWindowDimensions,
   View,
 } from 'react-native';
@@ -16,13 +19,19 @@ import {useImmediateLayoutAnimation} from 'use-layout-animation';
 
 import {Collection, PrimaryAssetContract, useCollectionLookup} from '../../lookup';
 import {LookupCollection} from "../../lookup/components";
+import {unionCollections} from "../../lookup/constants";
 import {useTheme} from "../../theme";
 
 import ScannerBottomSheet from './Scanner.BottomSheet';
 
 const styles = StyleSheet.create({
   center: {alignItems: 'center', justifyContent: 'center'},
+  flex: {flex: 1},
   fullWidth: {width: '100%'},
+  row: {
+    alignItems: 'center',
+    flexDirection: 'row',
+  },
   // eslint-disable-next-line react-native/no-color-literals
   shadow: {
     shadowColor: 'hotpink',
@@ -33,6 +42,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
   },
+  textAlignRight: {textAlign: 'right'},
 });
 
 export default function Scanner(): JSX.Element {
@@ -45,12 +55,36 @@ export default function Scanner(): JSX.Element {
   }, []);
 
   const [maybeEthereumAddress, setMaybeEthereumAddress] = React.useState<string>('');
+  const ethereumAddresses = React.useMemo<readonly string[]>(() => {
+    return typeof maybeEthereumAddress === 'string' && !!maybeEthereumAddress.length
+      ? [maybeEthereumAddress]
+      : [];
+  }, [maybeEthereumAddress]);
+
+  const connector = useWalletConnect();
+  const {connected, accounts} = connector;
+
   const {
     data,
     loading,
     error,
-  } = useCollectionLookup({maybeEthereumAddress});
+  } = useCollectionLookup({ethereumAddresses});
 
+  const signerEthereumAddresses = React.useMemo<readonly string[]>(() => {
+    if (connected) {
+      const {accounts} = connector;
+      return accounts;
+    }
+    return [];
+  }, [connector, connected]);
+
+  const {
+    data: signerData,
+    loading: signerLoading,
+    error: signerError,
+  } = useCollectionLookup({
+    ethereumAddresses: signerEthereumAddresses,
+  });
   const [
     visible,
     setVisible,
@@ -58,7 +92,6 @@ export default function Scanner(): JSX.Element {
   const {systemColors, hints} = useTheme();
   const {disabledColor} = systemColors;
   const {bottomBarHeight, marginStandard} = hints;
-
   const onBarCodeScanned = React.useCallback(({data}) => {
     setMaybeEthereumAddress(data);
   }, []);
@@ -75,10 +108,23 @@ export default function Scanner(): JSX.Element {
 
   const {width} = useWindowDimensions();
   const [value, onChange] = React.useState<string>('');
+  const [
+    showOnlySharedAssets,
+    setShowOnlySharedAssets,
+  ] = React.useState<boolean>(false);
+
+  const sourceDataToReference = React.useMemo(() => {
+    const externalData = data || [];
+    if (showOnlySharedAssets) {
+      const internalData = signerData || [];
+      return unionCollections({a: externalData, b: internalData});
+    }
+    return externalData;
+  }, [data, signerData, showOnlySharedAssets]);
 
 
   const filteredData = useDeepCompareMemo(() => (
-    (data || []).map((collection: Collection) => {
+    sourceDataToReference.map((collection: Collection) => {
       const {primary_asset_contracts} = collection;
       if (Array.isArray(primary_asset_contracts)) {
         const contractsWithAddresses = primary_asset_contracts.filter(
@@ -105,7 +151,10 @@ export default function Scanner(): JSX.Element {
       return null;
     })
     .filter(Boolean)
-  ), [data, value]);
+  ), [
+      sourceDataToReference,
+      value,
+  ]);
 
   useImmediateLayoutAnimation([filteredData], LayoutAnimation.Presets.easeInEaseOut);
 
@@ -134,13 +183,26 @@ export default function Scanner(): JSX.Element {
                 const {text} = nativeEvent;
                 onChange(text);
               }}
-              onSearchClear={() => {
-                console.warn('clear');
-                onChange('');
-              }}
+              onSearchClear={() => onChange('')}
               value={value}
             />
             <View style={{height: marginStandard}}/>
+            {!!connected && (
+              <>
+                <View style={[styles.row, {paddingHorizontal: marginStandard}]}>
+                  <Text
+                    children="Show only shared collections"
+                    style={[styles.flex, styles.textAlignRight]}
+                  />
+                  <View style={{width: marginStandard}} />
+                  <Switch
+                    onValueChange={setShowOnlySharedAssets}
+                    value={showOnlySharedAssets}
+                  />
+                </View>
+                <View style={{height: marginStandard}}/>
+              </>
+            )}
             <BottomSheetScrollView
               keyboardShouldPersistTaps="always"
               style={[styles.fullWidth, {padding: marginStandard}]}>

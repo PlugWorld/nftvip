@@ -1,5 +1,7 @@
+import {Ionicons} from '@expo/vector-icons';
 import {useNavigation} from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
+import {useWalletConnect} from "@walletconnect/react-native-dapp";
 import * as React from 'react';
 import {StyleProp, StyleSheet, TouchableOpacity, View, ViewStyle} from 'react-native';
 import FastImage from 'react-native-fast-image';
@@ -32,12 +34,24 @@ export default function ScannerTitle({height, style}: {
 }): JSX.Element {
   const {systemColors, hints} = useTheme();
   const {marginStandard} = hints;
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const {primary} = systemColors;
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const navigation = useNavigation<StackNavigationProp<any>>();
+  const connector = useWalletConnect();
+  const onPress = React.useCallback(() => {
+    void (async () => {
+      try {
+        await connector.connected
+          ? connector.killSession()
+          : connector.connect();
+      } catch (e) {
+        console.error(e);
+      }
+    })();
+  }, [connector]);
+  const {connected} = connector;
   return (
     <NavigationHeader height={height} style={style}>
       <View style={[styles.row, {padding: marginStandard}]}>
@@ -48,7 +62,13 @@ export default function ScannerTitle({height, style}: {
         />
         <View style={[styles.flex, styles.row, styles.flexEnd]}>
           {/* TODO: Something could go here. */}
-          <TouchableOpacity />
+          <TouchableOpacity onPress={onPress}>
+            <Ionicons
+              color={primary}
+              name={connected ? 'ios-wallet-sharp' : 'ios-wallet-outline'}
+              size={30}
+            />
+          </TouchableOpacity>
         </View>
       </View>
     </NavigationHeader>

@@ -7,7 +7,7 @@ import {useTheme} from "../../theme";
 const defaultSnapPoints: readonly string[] = [
   '5%',
   '55%',
-  '95%',
+  '100%',
 ];
 
 const defaultRequestDismiss = () => undefined;
