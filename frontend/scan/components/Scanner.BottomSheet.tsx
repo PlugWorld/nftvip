@@ -1,12 +1,12 @@
 import BottomSheet from '@gorhom/bottom-sheet';
 import * as React from 'react';
-import {StyleSheet, TouchableOpacity, View} from 'react-native';
+import {Keyboard, StyleSheet, TouchableOpacity, View} from 'react-native';
 
 import {useTheme} from "../../theme";
 
 const defaultSnapPoints: readonly string[] = [
   '5%',
-  '50%',
+  '55%',
   '95%',
 ];
 
@@ -38,6 +38,9 @@ export default function ScannerBottomSheet({
       }
     }
   }, [visible]);
+  const onChange = React.useCallback((nextIndex: number) => {
+    (nextIndex < 2) && Keyboard.dismiss();
+  }, []);
   return (
     <View style={StyleSheet.absoluteFill}>
       <TouchableOpacity
@@ -48,6 +51,7 @@ export default function ScannerBottomSheet({
         animateOnMount={false}
         ref={ref}
         index={0}
+        onChange={onChange}
         snapPoints={snapPoints}>
         <View style={{height: bottomBarHeight + marginExtraShort}}/>
         {children}

@@ -5987,6 +5987,11 @@ depd@~1.1.2:
   resolved "https://registry.yarnpkg.com/depd/-/depd-1.1.2.tgz#9bcd52e14c097763e749b274c4346ed2e560b5a9"
   integrity sha1-m81S4UwJd2PnSbJ0xDRu0uVgtak=
 
+dequal@1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/dequal/-/dequal-1.0.0.tgz#41c6065e70de738541c82cdbedea5292277a017e"
+  integrity sha512-/Nd1EQbQbI9UbSHrMiKZjFLrXSnU328iQdZKPQf78XQI6C+gutkFUeoHpG5J08Ioa6HeRbRNFpSIclh1xyG0mw==
+
 dequal@^2.0.2:
   version "2.0.2"
   resolved "https://registry.yarnpkg.com/dequal/-/dequal-2.0.2.tgz#85ca22025e3a87e65ef75a7a437b35284a7e319d"
@@ -8055,6 +8060,11 @@ functions-have-names@^1.2.2:
   version "1.2.2"
   resolved "https://registry.yarnpkg.com/functions-have-names/-/functions-have-names-1.2.2.tgz#98d93991c39da9361f8e50b337c4f6e41f120e21"
   integrity sha512-bLgc3asbWdwPbx2mNk2S49kmJCuQeu0nfmaOgbs8WIyzzkw3r4htszdIi9Q9EMezDPTYuJx2wvjZ/EwgAthpnA==
+
+fuzzy-search@^3.2.1:
+  version "3.2.1"
+  resolved "https://registry.yarnpkg.com/fuzzy-search/-/fuzzy-search-3.2.1.tgz#65d5faad6bc633aee86f1898b7788dfe312ac6c9"
+  integrity sha512-vAcPiyomt1ioKAsAL2uxSABHJ4Ju/e4UeDM+g1OlR0vV4YhLGMNsdLNvZTpEDY4JCSt0E4hASCNM5t2ETtsbyg==
 
 ganache-core@^2.13.2:
   version "2.13.2"
@@ -12829,6 +12839,15 @@ react-native-fast-image@^8.5.8:
   resolved "https://registry.yarnpkg.com/react-native-fast-image/-/react-native-fast-image-8.5.8.tgz#6f685ecbff5d8f74f33fc3c6b38c4eea9b33a6fd"
   integrity sha512-yVVKKPIbk6HrFwC+RynJluGb23Vy8TVQ4gN/Y9LyGaohDoRaxbwZzWdUA4CuT63ILImf5IqOmokypuTVQAD99w==
 
+react-native-foldview@^1.2.1:
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/react-native-foldview/-/react-native-foldview-1.2.1.tgz#9f6eac041d20ffc55b24e69d135a98eb0e4d2e6f"
+  integrity sha512-uQeXen9/dNS3OYrwp5Wu0ECP2lDCs9BQ1FuGUIqNdHTgtLU6b7VLMZcSBTBCaLuJjD360m6TC/aX5Rax03NMgw==
+  dependencies:
+    invariant "^2.2.2"
+    prop-types "^15.6.2"
+    warning "^3.0.0"
+
 react-native-gesture-handler@~1.10.2:
   version "1.10.3"
   resolved "https://registry.yarnpkg.com/react-native-gesture-handler/-/react-native-gesture-handler-1.10.3.tgz#942bbf2963bbf49fa79593600ee9d7b5dab3cfc0"
@@ -12893,6 +12912,11 @@ react-native-screens@~3.4.0:
   integrity sha512-cg+q9MRnVdeOcJyvJtqffoXLur/C2wHA/7IO2+FAipzTlgHbbM1mTuSM7qG+SeiQjoIs4mHOEf7A0ziPKW04sA==
   dependencies:
     warn-once "^0.1.0"
+
+react-native-search-component@^1.4.0:
+  version "1.4.0"
+  resolved "https://registry.yarnpkg.com/react-native-search-component/-/react-native-search-component-1.4.0.tgz#54352eccb51c5ca9d6413470db21a040609b0806"
+  integrity sha512-H59Z9Pcv/MLe0lmpUSoKTOcXaq54ZE+3PUslGYiUSUM/FzudYSySwcHQZkN1Qa5Z4zXFteeo4o1YirFtnjxA0g==
 
 react-native-snap-carousel@^3.9.1:
   version "3.9.1"
@@ -15218,6 +15242,13 @@ use-deep-compare-effect@1.6.1:
     "@types/react" "^17.0.0"
     dequal "^2.0.2"
 
+use-deep-compare@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/use-deep-compare/-/use-deep-compare-1.1.0.tgz#85580dde751f68400bf6ef7e043c7f986595cef8"
+  integrity sha512-6yY3zmKNCJ1jjIivfZMZMReZjr8e6iC6Uqtp701jvWJ6ejC/usXD+JjmslZDPJQgX8P4B1Oi5XSLHkOLeYSJsA==
+  dependencies:
+    dequal "1.0.0"
+
 use-layout-animation@^0.0.2:
   version "0.0.2"
   resolved "https://registry.yarnpkg.com/use-layout-animation/-/use-layout-animation-0.0.2.tgz#ac8eb488e74dc2e56988246983da2278b3cdd143"
@@ -15390,6 +15421,13 @@ warn-once@^0.1.0:
   version "0.1.0"
   resolved "https://registry.yarnpkg.com/warn-once/-/warn-once-0.1.0.tgz#4f58d89b84f968d0389176aa99e0cf0f14ffd4c8"
   integrity sha512-recZTSvuaH/On5ZU5ywq66y99lImWqzP93+AiUo9LUwG8gXHW+LJjhOd6REJHm7qb0niYqrEQJvbHSQfuJtTqA==
+
+warning@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/warning/-/warning-3.0.0.tgz#32e5377cb572de4ab04753bdf8821c01ed605b7c"
+  integrity sha1-MuU3fLVy3kqwR1O9+IIcAe1gW3w=
+  dependencies:
+    loose-envify "^1.0.0"
 
 wcwidth@^1.0.1:
   version "1.0.1"

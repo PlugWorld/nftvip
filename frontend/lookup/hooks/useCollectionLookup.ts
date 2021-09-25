@@ -42,7 +42,6 @@ export default function useCollectionLookup({
               loading: true,
             }));
             const url = `https://api.opensea.io/api/v1/collections?asset_owner=${withAssetOwner}&offset=0`;
-            console.warn(withAssetOwner, url);
             const {data} = await axios({
               method: 'get',
               url,
@@ -56,7 +55,6 @@ export default function useCollectionLookup({
         // eslint-disable-next-line functional/no-throw-statement
         throw new Error('Invalid asset owner.');
       } catch (error) {
-        console.error(error);
          setState(e => ({
            ...e,
            error,
